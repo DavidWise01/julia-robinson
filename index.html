@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Julia Robinson — Hilbert's tenth problem</title>
+<meta name="description" content="LOGIKĒ XXIII — Julia Robinson (1919–1985). She spent decades on Hilbert's tenth problem: is there an algorithm that decides whether any Diophantine (integer polynomial) equation has integer solutions? Her work — the Robinson hypothesis and the Davis–Putnam–Robinson theorem — built the frame that Yuri Matiyasevich completed in 1970, proving the answer is NO: no such algorithm can exist (the MRDP theorem, that Diophantine sets are exactly the computably enumerable sets). Live: hunt integer solutions to Diophantine equations and meet the undecidability wall. She was the first woman president of the AMS and first woman mathematician in the National Academy. David Lee Wise, two-layer honest.">
+<style>
+  :root{--bg:#0c0f17;--panel:#121622;--panel2:#19202f;--edge:#2a3346;--ink:#ede6d6;--dim:#b3ad9a;--faint:#7c7660;
+    --ochre:#d9b66a;--ochre2:#f0d79a;--proof:#5ad1ff;--proof2:#a7e6ff;--one:#7fe0a0;--zero:#fb7185;--amber:#fbbf24;--ember:#fb923c;
+    --mono:'SFMono-Regular',ui-monospace,'Cascadia Code',Menlo,Consolas,monospace;--serif:'Iowan Old Style','Palatino Linotype',Palatino,Georgia,serif;}
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--serif);line-height:1.58;background-image:radial-gradient(1100px 560px at 75% -10%,#1c2436 0%,transparent 55%),radial-gradient(900px 500px at 0% 100%,#14110a 0%,transparent 55%);}
+  .wrap{max-width:1000px;margin:0 auto;padding:44px 26px 90px}
+  header{border-bottom:1px solid var(--edge);padding-bottom:22px;margin-bottom:24px}
+  .kicker{font-family:var(--mono);font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--ochre);opacity:.95}
+  h1{font-family:Georgia,serif;font-size:38px;line-height:1.08;margin:.3em 0 .14em;font-weight:600}h1 em{color:var(--ochre2);font-style:italic}
+  .who{font-family:var(--mono);font-size:12px;color:var(--faint);letter-spacing:.04em}
+  .sub{color:var(--dim);font-size:16px;max-width:74ch;margin-top:14px}.sub b{color:var(--ink)}
+  .verdicts{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:22px 0}@media(max-width:720px){.verdicts{grid-template-columns:1fr}}
+  .vc{border:1px solid var(--edge);border-radius:11px;padding:13px 15px;border-top-width:3px;background:rgba(18,22,34,.6)}
+  .vc .badge{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.12em}
+  .vc.s{border-top-color:var(--one)}.vc.s .badge{color:var(--one)} .vc.m{border-top-color:var(--amber)}.vc.m .badge{color:var(--amber)} .vc.f{border-top-color:var(--ember)}.vc.f .badge{color:var(--ember)}
+  .vc p{font-size:12px;color:var(--dim);margin:6px 0 0;line-height:1.45}.vc p b{color:var(--ink)}
+  section{margin:36px 0}
+  h2{font-size:13px;font-family:var(--mono);letter-spacing:.22em;text-transform:uppercase;color:var(--ochre2);border-left:2px solid var(--ochre);padding-left:11px;margin:0 0 6px}
+  .lede{color:var(--dim);font-size:15px;margin:0 0 18px;max-width:80ch}
+  .panel{background:linear-gradient(180deg,var(--panel),#0a0d14);border:1px solid var(--edge);border-radius:14px;padding:20px;box-shadow:0 24px 60px -40px #000}
+  .controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px}
+  button{font-family:var(--mono);font-size:12px;color:var(--ink);background:#1a2030;border:1px solid var(--edge);border-radius:8px;padding:8px 12px;cursor:pointer}button:hover{background:#222b3e;border-color:var(--ochre)}
+  .eq{font-family:var(--mono);font-size:12px;border:1px solid var(--edge);border-radius:7px;padding:7px 11px;cursor:pointer;color:var(--dim)}.eq:hover{border-color:var(--ochre)}.eq.on{border-color:var(--proof);color:var(--proof2);box-shadow:0 0 0 1px var(--proof) inset}
+  .display{font-family:var(--mono);font-size:20px;color:var(--proof2);text-align:center;background:#0c1622;border:1px solid var(--edge);border-radius:9px;padding:14px;margin-top:6px}
+  .sols{font-family:var(--mono);font-size:13px;margin-top:12px;min-height:48px;display:flex;gap:7px;flex-wrap:wrap;justify-content:center}
+  .sol{border:1px solid #2f5b40;background:#0d1a12;color:var(--one);border-radius:7px;padding:5px 10px}
+  .nosol{color:var(--amber)}
+  .scan{font-family:var(--mono);font-size:11px;color:var(--faint);text-align:center;margin-top:8px}
+  .note{color:var(--dim);font-size:13.5px;border-left:2px solid var(--edge);padding-left:13px;margin:16px 0 0}.note b{color:var(--ink)}
+  .thm{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}@media(max-width:620px){.thm{grid-template-columns:1fr}}
+  .tm{border:1px solid var(--edge);border-radius:10px;padding:13px 15px;background:rgba(0,0,0,.14)}.tm b{color:var(--ochre2);font-family:var(--mono);font-size:11px}.tm p{font-size:13px;color:var(--dim);margin:6px 0 0}
+  footer{margin-top:44px;border-top:1px solid var(--edge);padding-top:18px;color:var(--faint);font-family:var(--mono);font-size:11px;line-height:1.7}
+  footer a,.bar2 a{color:var(--ochre)}.bar2{font-family:var(--mono);font-size:11.5px;margin-bottom:16px}.bar2 a{text-decoration:none;border-bottom:1px dotted #4a4126}
+  code{font-family:var(--mono);color:var(--ochre2);background:#15120a;padding:1px 5px;border-radius:5px}
+  blockquote{margin:14px 0;padding:10px 16px;border-left:3px solid var(--ochre);color:var(--ink);font-style:italic;font-size:15px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="bar2"><a href="https://davidwise01.github.io/ud0/">◄ UD0</a> &nbsp; <a href="https://davidwise01.github.io/rozsa-peter/">← Péter</a> &nbsp; LOGIKĒ · XXIII · the other half</div>
+<header>
+  <div class="kicker">LOGIKĒ · XXIII · Hilbert's tenth problem</div>
+  <h1>Julia <em>Robinson</em></h1>
+  <div class="who">1919 – 1985 · St. Louis &amp; Berkeley · first woman president of the AMS · first woman mathematician in the U.S. National Academy of Sciences</div>
+  <div class="sub">Of [[david-hilbert]]'s 23 problems, the <b>tenth</b> asked for something concrete: an algorithm that, given any <b>Diophantine equation</b> — a polynomial equation in whole numbers, like <code>x² − 2y² = 1</code> — decides whether it has an integer solution. For most of the twentieth century no one knew if such a procedure existed. Julia Robinson spent <em>decades</em> on it, building the crucial machinery — the <b>Robinson hypothesis</b> and the Davis–Putnam–Robinson theorem — that reduced the whole question to one missing piece. In 1970 a 22-year-old in Leningrad, <b>Yuri Matiyasevich</b>, supplied it, completing a proof that is hers as much as anyone's: <b>no such algorithm can exist.</b></div>
+</header>
+<div class="verdicts">
+  <div class="vc s"><span class="badge">✓ STRONG</span><p><b>A 70-year problem, closed.</b> The MRDP theorem (Matiyasevich–Robinson–Davis–Putnam) settles Hilbert's tenth: Diophantine sets are exactly the computably enumerable sets, so no algorithm decides Diophantine solvability. Rigorous and deep.</p></div>
+  <div class="vc m"><span class="badge">◐ A RELAY, NOT A SOLO</span><p><b>Four names, two generations, one Cold War.</b> Davis, Putnam, and Robinson built the frame across the 1950s–60s; Matiyasevich (1970) added the final Fibonacci step. Robinson's was the central, sustained contribution — but it was a collaboration.</p></div>
+  <div class="vc f"><span class="badge">◔ THE SEARCH CAN'T DECIDE</span><p><b>Why the demo has a wall.</b> Hunting for solutions can <em>confirm</em> a "yes," but can never prove a "no" in general — exactly what the theorem says. The toy below finds solutions; it cannot settle the undecidable in the abstract.</p></div>
+</div>
+
+<section>
+  <h2>I · Diophantine equations — and the wall behind them</h2>
+  <p class="lede">A Diophantine equation asks for <b>whole-number</b> solutions. Some have infinitely many, some have exactly one, some have none — and there is no telling which from the look of it. Pick an equation; the machine searches a bounded range for integer solutions. Notice the asymmetry that <em>is</em> Hilbert's tenth: when solutions exist, a search finds them; when they don't, no bounded search can ever prove it — and the theorem says no <em>un</em>bounded procedure can either.</p>
+  <div class="panel">
+    <div class="controls" id="picker"></div>
+    <div class="display" id="eq"></div>
+    <div class="sols" id="sols"></div>
+    <div class="scan" id="scan"></div>
+    <div class="note">"Find a solution" is a search you can run; "decide whether a solution exists, for <em>every</em> equation" is what Hilbert wanted — and Robinson's life work proved it <b>impossible</b>. ⚑ It's the same undecidability as [[alan-turing]]'s halting problem, wearing the clothes of ordinary algebra: the question "does this equation have a whole-number answer?" has no general mechanical answer.</div>
+  </div>
+  <blockquote>"I would rather not be remembered as the first woman this or that. I would rather be remembered… for the theorems I have proved." <span style="color:var(--faint);font-style:normal;font-size:12px">— Julia Robinson</span></blockquote>
+</section>
+
+<section>
+  <h2>II · MRDP — what the proof actually says</h2>
+  <div class="thm">
+    <div class="tm"><b>DIOPHANTINE = COMPUTABLY ENUMERABLE</b><p>The deep equivalence: a set of numbers can be defined by a Diophantine equation exactly when it can be listed by a computer program. Number theory and computability are the same reach.</p></div>
+    <div class="tm"><b>⇒ HILBERT'S 10th IS UNDECIDABLE</b><p>Since some computably-enumerable sets are undecidable (Turing), some Diophantine questions must be too. No algorithm decides solvability for all equations.</p></div>
+  </div>
+  <p class="lede" style="margin-top:16px">The bridge is breathtaking: Robinson and her collaborators showed that the humble whole-number polynomial is secretly as powerful as a <em>computer</em> — anything a program can enumerate, an equation can capture. So the undecidability that [[alan-turing]] found in machines and [[kurt-godel]] found in proof reappears, exactly, in the arithmetic of integers. Hilbert asked for a decision machine; the answer, decades in the building, was that the integers themselves are <b>Turing-complete</b>, and so no such machine exists. It is one of the most surprising unifications in mathematics — number theory <em>is</em> computability — and Julia Robinson is at its center.</p>
+</section>
+
+<section>
+  <h2>III · The decades, the relay, the woman</h2>
+  <p class="note" style="border-color:var(--amber)"><b style="color:var(--amber)">Gate kept on.</b> The result is <b>rigorous and monumental</b>, and the credit is genuinely shared — the honest name is <b>MRDP</b> (Matiyasevich–Robinson–Davis–Putnam). Martin Davis and Hilary Putnam built early pieces; Robinson's <b>hypothesis</b> (that some Diophantine relation grows exponentially) was the keystone the whole edifice waited on for over a decade; and in 1970 the young <b>Yuri Matiyasevich</b> proved her hypothesis using Fibonacci numbers, completing it. Robinson immediately and generously credited him, and the two became close collaborators and friends across the Cold War divide — a rare thing in that era. Her contribution was the <em>sustained spine</em> of a twenty-year effort, not a single flourish. The woman: weakened for life by childhood rheumatic fever that damaged her heart, told she might not live long and could not have children, she poured herself into mathematics; she became the <b>first woman president of the American Mathematical Society</b> and the <b>first woman mathematician elected to the National Academy of Sciences</b>, often working without a regular faculty appointment at Berkeley for years because she was a professor's wife. She asked to be remembered for her theorems — so: she helped prove that arithmetic itself is undecidable, that the integers are as powerful as any computer. ⚑ [[rozsa-peter]] ← · next → Ruth Barcan Marcus.</p>
+</section>
+
+<footer>
+  JULIA ROBINSON · LOGIKĒ XXIII · two-layer honest · the other half<br>
+  live Diophantine solution-hunter (bounded integer search over Pell &amp; other equations — finds solutions where they exist; verified x²−2y²=1 → (1,0),(3,2),(17,12)…) and the undecidability wall it illustrates<br>
+  Hilbert's 10th problem · the Robinson hypothesis &amp; the MRDP theorem (Diophantine sets = computably enumerable sets → no algorithm decides solvability) · 1st woman AMS president &amp; NAS mathematician<br>
+  ← <a href="https://davidwise01.github.io/rozsa-peter/">Péter</a> · next → <b>Ruth Barcan Marcus</b> (quantified modal logic)<br>
+  LOGIKĒ · the lineage of logical mathematics · governor David Lee Wise · CC-BY-ND-4.0
+</footer>
+</div>
+<script>
+"use strict";
+(function(){
+  const $=id=>document.getElementById(id);
+  const EQS=[
+    {label:"x² − 2y² = 1", disp:"x² − 2y² = 1", f:(x,y)=>x*x-2*y*y===1, kind:"Pell — infinitely many"},
+    {label:"x² − 3y² = 1", disp:"x² − 3y² = 1", f:(x,y)=>x*x-3*y*y===1, kind:"Pell — infinitely many"},
+    {label:"x² + y² = 25", disp:"x² + y² = 25", f:(x,y)=>x*x+y*y===25, kind:"a circle of radius 5"},
+    {label:"x² − 2y² = 3", disp:"x² − 2y² = 3", f:(x,y)=>x*x-2*y*y===3, kind:"no solutions exist"},
+    {label:"x² + y² = 3", disp:"x² + y² = 3", f:(x,y)=>x*x+y*y===3, kind:"no solutions (3 isn't a sum of two squares)"}
+  ];
+  let cur=0;
+  function search(eq){
+    const LIM=60, sols=[]; let tested=0;
+    for(let x=0;x<=LIM;x++) for(let y=0;y<=LIM;y++){ tested++; if(eq.f(x,y)){ sols.push([x,y]); if(sols.length>=6) return {sols,tested,truncated:true}; } }
+    return {sols,tested,truncated:false};
+  }
+  function render(){
+    $('picker').innerHTML=EQS.map((e,i)=>'<span class="eq'+(i===cur?' on':'')+'" data-i="'+i+'">'+e.label+'</span>').join('');
+    $('picker').querySelectorAll('.eq').forEach(el=>el.onclick=()=>{cur=+el.dataset.i;render();});
+    const eq=EQS[cur];
+    $('eq').textContent=eq.disp;
+    const r=search(eq);
+    if(r.sols.length){
+      $('sols').innerHTML=r.sols.map(([x,y])=>'<span class="sol">(x,y) = ('+x+', '+y+')</span>').join('')+(r.truncated?'<span class="sol" style="border-color:var(--edge);background:transparent;color:var(--faint)">… more</span>':'');
+      $('scan').innerHTML='searched x,y ∈ [0, 60] · found '+r.sols.length+(r.truncated?'+':'')+' solution(s) · <span style="color:var(--proof2)">a "yes" the search can confirm</span> &nbsp;('+eq.kind+')';
+    } else {
+      $('sols').innerHTML='<span class="nosol">no solutions found in the searched range</span>';
+      $('scan').innerHTML='searched x,y ∈ [0, 60], '+r.tested.toLocaleString()+' pairs · <span style="color:var(--amber)">but a finite search can never prove "none exist at all"</span> — that is exactly the wall Hilbert’s 10th runs into ('+eq.kind+')';
+    }
+  }
+  render();
+})();
+</script>
+</body>
+</html>
